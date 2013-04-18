@@ -28,16 +28,13 @@
 
 + (db*)sharedClient {
     static db *_sharedClient = nil;
-
-    _sharedClient = [[db alloc] init];
     
-    if(_sharedClient) {
-        if([db isCopied])
-        {
-            _sharedClient.database = [[FMDatabase alloc] initWithPath:[db dbpath]];
-            if (![_sharedClient.database open]) {
-                NSLog(@"Error");
-            }
+    if (_sharedClient == nil) {
+        _sharedClient = [[db alloc] init];
+        [db setup];
+        _sharedClient.database = [[FMDatabase alloc] initWithPath:[db dbpath]];
+        if (![_sharedClient.database open]) {
+            NSLog(@"Error");
         }
     }
 

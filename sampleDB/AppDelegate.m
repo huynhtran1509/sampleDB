@@ -22,7 +22,6 @@
     
     self.window.rootViewController = navController;
     [self.window makeKeyAndVisible];
-    [db setup];
     return YES;
 }
 
