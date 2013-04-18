@@ -29,12 +29,15 @@
 + (db*)sharedClient {
     static db *_sharedClient = nil;
 
-        _sharedClient = [[db alloc] init];
+    _sharedClient = [[db alloc] init];
     
     if(_sharedClient) {
-        _sharedClient.database = [[FMDatabase alloc] initWithPath:[db dbpath]];
-        if (![_sharedClient.database open]) {
-            NSLog(@"Error");
+        if([db isCopied])
+        {
+            _sharedClient.database = [[FMDatabase alloc] initWithPath:[db dbpath]];
+            if (![_sharedClient.database open]) {
+                NSLog(@"Error");
+            }
         }
     }
 
@@ -46,8 +49,15 @@
     {
         NSString* originalPath = [[NSBundle mainBundle] pathForResource:@"contact" ofType:@"sqlite"];
         
-        [[NSFileManager defaultManager] copyItemAtPath:originalPath toPath:[db dbpath] error:nil];
+        NSError* error = nil;
+        [[NSFileManager defaultManager] copyItemAtPath:originalPath toPath:[db dbpath] error:&error];
+        
+        if(error)
+        {
+            NSLog(@"%@",[error localizedDescription]);
+        }
     }
+    NSLog(@"DB PATH %@",[db dbpath]);
 }
 
 
